@@ -1,0 +1,51 @@
+<section>
+    <div class="top-heading">My WishList ({{wishList.length}})</div>
+    <ng-container *ngIf="wishList?.length; else emptyWishList;" >
+        <ng-container *ngFor="let item of wishList; let i = index">
+            <div class="item-card" (click)="viewItemDetail(item)">
+                <div class="img-div">
+                    <img [src]="item?.imgUrls[0]" alt="">
+                </div>
+                <div class="details-container">
+                    <div class="right-top-item">
+                        <div class="item-description">
+                            <span>{{item?.itemDescription}} </span>
+                            <ng-container *ngFor="let key of item?.activeProduct | keyvalue; let isLast=last">
+                                <span *ngIf="!isLast" class="active-product">({{$any(key?.key).split('_').join(' ')}}: {{key?.value}}) </span>
+                                <span *ngIf="isLast" class="active-product" >({{$any(key?.key).split('_').join(' ')}}: {{key?.value}})</span>
+                            </ng-container>
+                        </div>
+                        <button mat-flat-button type="button" (click)="deleteFavoriteItem(item)">Remove</button>
+                    </div>
+                    <div class="badge-rating-review">
+                        <div class="rating-badge">
+                            <span class="rating">{{item?.ratingsAndReviewsDetails?.overAllRating | decimal: 1}}</span>
+                            <mat-icon>star</mat-icon>
+                        </div>
+                        <div class="ratings">{{item?.ratingsAndReviewsDetails?.numberOfRating}} Ratings</div>
+                        <div class="and">&</div>
+                        <div class="reviews">{{item?.ratingsAndReviewsDetails?.numberOfReview}} Reviews</div>
+                    </div>
+                    <div class="extra-off">Extra {{(item?.markedPrice - item?.sellingPrice) | currency}} off</div>
+                    <div class="price-details">
+                        <div class="selling-price">{{item?.sellingPrice | currency}}</div>
+                        <div class="margin-price">{{item?.markedPrice | currency}}</div>
+                        <div class="discount-percent">{{item?.discountPercent | decimal: 0}}% off</div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+    <ng-template #emptyWishList>
+        <div class="empty-cart-card">
+            <div class="img-div">
+                <img src="/assets/img/empty-cart/1.webp" alt="">
+            </div>
+            <div class="empty-cart-text">Empty Wishlist</div>
+            <div class="add-items-to-now">You have no items in your wishlist. Start adding!</div>
+            <div class="shop-now-btn">
+                <button mat-flat-button (click)="home()">Shop now</button>
+            </div>
+        </div>
+    </ng-template>
+</section>

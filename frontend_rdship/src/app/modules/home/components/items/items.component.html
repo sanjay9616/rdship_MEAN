@@ -1,0 +1,189 @@
+<section>
+    <div class="filter-section">
+        <div class="top-filters">
+            <div class="breadcrumbs">
+                <span><span [routerLink]="''" class="home">Home</span> <span> > </span></span>
+                <span *ngIf="formGroup.get('category')?.value?.length">{{formGroup.get('category')?.value[0]}} </span>
+                <span *ngIf="formGroup.get('searchStr')?.value">{{formGroup.get('searchStr')?.value}} </span>
+            </div>
+            <div class="filter-btn" [ngClass]="{ 'activer-filter-btn' : isOpenFilers }">
+                <button mat-flat-button (click)="openCloseFilters()">
+                    <span>Filters</span>
+                    <mat-icon>filter_list</mat-icon>
+                </button>
+            </div>
+            <div class="applied-filter">
+                <ng-container *ngFor="let subCategory of formGroup?.get('subCategories')?.value; let i = index;">
+                    <div class="filter">
+                        <span>{{subCategory}}</span>
+                        <button mat-icon-button type="button" (click)="removeFilter('subCategories', i)">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngFor="let brand of formGroup?.get('brands')?.value; let i = index;">
+                    <div class="filter">
+                        <span>{{brand}}</span>
+                        <button mat-icon-button type="button" (click)="removeFilter('brands', i)">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="formGroup?.get('sellingPrice')?.value">
+                    <div class="filter">
+                        <span>{{formGroup.get('sellingPrice')?.value - 99 | currency}} - {{formGroup.get('sellingPrice')?.value | currency}}</span>
+                        <button mat-icon-button type="button" (click)="removeFilter('sellingPrice')">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="formGroup?.get('rating')?.value">
+                    <div class="filter">
+                        <span class="rating-badge">
+                            <span class="rating">{{formGroup.get('rating')?.value}}</span>
+                            <mat-icon>star</mat-icon>
+                        </span>
+                        <span>&nbsp;& above</span>
+                        <button mat-icon-button type="button" (click)="removeFilter('rating')">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="formGroup?.get('discountPercent')?.value">
+                    <div class="filter">
+                        <span>{{formGroup.get('discountPercent')?.value}}% or more</span>
+                        <button mat-icon-button type="button" (click)="removeFilter('discountPercent')">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+            <button mat-flat-button type="button" class="clear-all-btn" (click)="clearFilter()">CLEAR ALL</button>
+        </div>
+        <form [formGroup]="formGroup" *ngIf="isOpenFilers" class="all-filters">
+            <mat-form-field appearance="outline">
+                <mat-label>Sub Categories</mat-label>
+                <mat-select formControlName="subCategories" (selectionChange)="toggleSubCategories()" matInput multiple>
+                    <mat-option>
+                        <ngx-mat-select-search [toggleAllCheckboxChecked]="toggleAllSubcategoriesCheckboxState" [showToggleAllCheckbox]="true"
+                            [formControl]="subCategoryMultiFilterCtrl" (toggleAll)="toggleAllSubCategories($event)" [placeholderLabel]="'Search sub categories...'"
+                            [noEntriesFoundLabel]="'no matching sub categories found'">
+                        </ngx-mat-select-search>
+                    </mat-option>
+                    <ng-container *ngFor="let subcategory of subCategoriesListOptions">
+                        <mat-option [value]="subcategory">{{subcategory}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Brand</mat-label>
+                <mat-select formControlName="brands" (selectionChange)="toggleBrand()" matInput multiple>
+                    <mat-option>
+                        <ngx-mat-select-search [toggleAllCheckboxChecked]="toggleAllBrandsCheckboxState" [showToggleAllCheckbox]="true"
+                            [formControl]="brandMultiFilterCtrl" (toggleAll)="toggleAllBrands($event)" [placeholderLabel]="'Search brands...'"
+                            [noEntriesFoundLabel]="'no matching brands found'">
+                        </ngx-mat-select-search>
+                    </mat-option>
+                    <ng-container *ngFor="let brand of brandsListOptions">
+                        <mat-option [value]="brand">{{brand}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Price</mat-label>
+                <mat-select formControlName="sellingPrice" placeholder="Price">
+                    <ng-container *ngFor="let price of priceList">
+                        <mat-option [value]="price?.value">{{price?.view}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Rating</mat-label>
+                <mat-select formControlName="rating" placeholder="Rating">
+                    <ng-container *ngFor="let rating of ratingList">
+                        <mat-option [value]="rating?.value">
+                            <div class="option-rating-badge">
+                                <div class="rating-badge">
+                                    <span class="rating">{{rating?.value}}</span>
+                                    <mat-icon> star</mat-icon>
+                                </div>
+                                <span class="and-above"> & above</span>
+                            </div>
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Discount</mat-label>
+                <mat-select formControlName="discountPercent" placeholder="Discount">
+                    <ng-container *ngFor="let discount of discountPercent">
+                        <mat-option [value]="discount?.value">{{discount?.view}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <div class="btn-div">
+                <button mat-flat-button type="button" (click)="clearFilter()">Clear</button>
+                <!-- <button mat-flat-button type="button" (click)="applyFilter">Apply</button> -->
+            </div>
+        </form>
+    </div>
+    <ng-container *ngIf="pageDetails?.items?.length; else emptyItems;">
+        <div class="item-setion">
+            <div class="grocery-items-container">
+                <ng-container *ngFor="let item of pageDetails?.items | paginate: { itemsPerPage: formGroup.get('itemsPerPage')?.value, currentPage: formGroup.get('currentPage')?.value, totalItems: pageDetails?.totalItems }">
+                    <div class="grocery-items" (click)="viewItemDetail(item)">
+                        <div class="item">
+                            <div class="favorite" (click)="$event.stopPropagation();"
+                                [ngClass]="{ 'active' : item?.isFavorite }">
+                                <button mat-flat-button (click)="addRemoveFavoriteItem(item)">
+                                    <mat-icon>favorite</mat-icon>
+                                </button>
+                            </div>
+                            <div class="image-div">
+                                <img [src]="item?.imgUrls[0]" alt="">
+                            </div>
+                            <div class="text-div">
+                                <div class="text">{{item?.itemDescription}}</div>
+                            </div>
+                            <div class="calculation-div">
+                                <div class="price">
+                                    <div class="min-price">{{item?.sellingPrice | currency}}</div>
+                                    <div class="actual-price">{{item?.markedPrice | currency}}</div>
+                                    <div class="off">{{item?.discountPercent | decimal: 0}}% off</div>
+                                </div>
+                                <div class="rating-badge">
+                                    <span class="rating">{{item?.ratingsAndReviewsDetails?.overAllRating | decimal:
+                                        1}}</span>
+                                    <mat-icon>star</mat-icon>
+                                </div>
+                            </div>
+                            <div class="button-section">
+                                <button mat-flat-button [disabled]="true" class="item-details-btn">
+                                    <ng-container *ngFor="let key of item?.activeProduct | keyvalue; let isLast=last">
+                                        <span *ngIf="!isLast">{{key?.value}} * </span>
+                                        <span *ngIf="isLast">{{key?.value}}</span>
+                                    </ng-container>
+                                </button>
+                                <button *ngIf="!item?.isCart" mat-flat-button class="add-item-btn" (click)="$event.stopPropagation();" (click)="addCartItem(item)">ADD Item</button>
+                                <button *ngIf="item?.isCart" mat-flat-button class="shop-now-btn" (click)="$event.stopPropagation();">Shop Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="pagination-div">
+                <div>Showing {{formGroup.get('itemsPerPage')?.value}} out of {{pageDetails?.totalItems}} products</div>
+                <pagination-controls *ngIf="20>0" (pageChange)="search($event)"></pagination-controls>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #emptyItems>
+        <div class="empty-item-container">
+            <div class="img-div">
+                <img src="/assets/img/empty-item/1.png" alt="">
+            </div>
+            <div class="sorry-text">Sorry, no results found!</div>
+            <div class="suggetion-text">Please check the spelling or try searching for something else</div>
+        </div>
+    </ng-template>
+</section>

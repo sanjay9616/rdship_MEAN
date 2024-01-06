@@ -1,0 +1,47 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/frontend_rdship/dist
+/frontend_rdship/tmp
+/frontend_rdship/out-tsc
+# Only exists if Bazel was run
+/frontend_rdship/bazel-out
+
+# dependencies
+/frontend_rdship/node_modules
+/backened-rdship/node_modules
+
+# profiling files
+chrome-profiler-events*.json
+
+# IDEs and editors
+/frontend_rdship/.idea
+/frontend_rdship/.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/frontend_rdship/.angular/cache
+/frontend_rdship/.sass-cache
+/frontend_rdship/connect.lock
+/frontend_rdship/coverage
+/frontend_rdship/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/frontend_rdship/typings
+
+# System Files
+.DS_Store
+Thumbs.db
